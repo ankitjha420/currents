@@ -2,8 +2,8 @@
 import * as THREE from 'three'
 import { FontLoader, OrbitControls, TextGeometry } from 'three/examples/jsm/Addons.js'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
-import fragment from './shaders/frag.glsl'
-import vertex from './shaders/vert.glsl'
+import fragment from './shaders/frag.glsl?raw'
+import vertex from './shaders/vert.glsl?raw'
 
 // constants ->
 const device = {
@@ -102,9 +102,11 @@ export class Sketch {
             // center the axis of rotation ->
             textGeo.computeBoundingBox()
             const centerOffset = new THREE.Vector3()
-            textGeo.boundingBox.getCenter(centerOffset)
-            centerOffset.multiplyScalar(-1)
-            textGeo.translate(centerOffset.x, centerOffset.y, centerOffset.z)
+            if (textGeo.boundingBox) {
+                textGeo.boundingBox.getCenter(centerOffset)
+                centerOffset.multiplyScalar(-1)
+                textGeo.translate(centerOffset.x, centerOffset.y, centerOffset.z)
+            }
 
             this.textMesh = new THREE.Mesh(textGeo, this.material)
             this.textMesh.position.z = 1
@@ -165,7 +167,7 @@ export class Sketch {
         device.width = window.innerWidth
         device.height = window.innerHeight
 
-        this.camera.aspect = device.width / device.height
+        // this.camera.aspect = device.width / device.height
         this.camera.updateProjectionMatrix()
 
         this.renderer.setSize(device.width, device.height)
